@@ -1,5 +1,6 @@
 package com.ever.androidsetup.providers;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ever.androidsetup.App;
@@ -14,12 +15,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Scheduler;
+import rx.functions.Action0;
 import rx.functions.Action1;
 
 import static com.ever.androidsetup.injection.module.SchedulerModule.IO;
 import static com.ever.androidsetup.injection.module.SchedulerModule.MAIN_THREAD;
 
 public class MainPresenter {
+
+    private static final String TAG = "MainPresenter";
 
     @Inject
     GiphyClient client;
@@ -32,6 +36,8 @@ public class MainPresenter {
 
     private final WeakReference<MainView> viewRef;
 
+    private boolean isSearching;
+
     public MainPresenter(MainView view) {
         DaggerPresenterComponent.builder()
                 .applicationComponent(App.get()
@@ -42,7 +48,11 @@ public class MainPresenter {
     }
 
     public void onResume() {
+        if (isSearching) {
+            return;
+        }
         client.getTrendingGiphys()
+                .take(1)
                 .observeOn(observerOn)
                 .subscribeOn(subscribeOn)
                 .subscribe(new Action1<GiphyResponse>() {
@@ -55,7 +65,33 @@ public class MainPresenter {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Log.e("MainPresenter", "error getting giphies e = " + throwable.getMessage());
+                        Log.e(TAG, "error getting giphies = " + throwable.getMessage());
+                    }
+                });
+    }
+
+    public void search(@NonNull String query) {
+        isSearching = true;
+        client.searchGiphys(query)
+                .take(1)
+                .observeOn(observerOn)
+                .subscribeOn(subscribeOn)
+                .subscribe(new Action1<GiphyResponse>() {
+                    @Override
+                    public void call(GiphyResponse giphyResponse) {
+                        if (viewRef.get() != null) {
+                            viewRef.get().updateGiphies(giphyResponse.data);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.e(TAG, "error getting search giphies = " + throwable.getMessage());
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        isSearching = false;
                     }
                 });
     }

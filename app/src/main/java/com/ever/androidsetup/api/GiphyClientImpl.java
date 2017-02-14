@@ -15,13 +15,14 @@ import rx.Observable;
 public class GiphyClientImpl implements GiphyClient {
 
     private static final String BASE_API = "http://api.giphy.com/v1/gifs/";
+    private static final String API_KEY = "dc6zaTOxFJmzC";
 
     private final GiphyService giphyService;
 
     public GiphyClientImpl() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        OkHttpClient client = new OkHttpClient.Builder().build();
 
         giphyService = new Retrofit.Builder()
                 .client(client)
@@ -34,11 +35,11 @@ public class GiphyClientImpl implements GiphyClient {
 
     @Override
     public Observable<GiphyResponse> getTrendingGiphys() {
-        return giphyService.trendingGiphys();
+        return giphyService.trendingGiphys(API_KEY);
     }
 
     @Override
     public Observable<GiphyResponse> searchGiphys(@NonNull String searchQuery) {
-        return giphyService.searchGiphys(searchQuery);
+        return giphyService.searchGiphys(searchQuery, API_KEY);
     }
 }

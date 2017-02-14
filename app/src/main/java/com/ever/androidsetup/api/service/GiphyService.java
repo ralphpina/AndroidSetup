@@ -3,14 +3,14 @@ package com.ever.androidsetup.api.service;
 import com.ever.androidsetup.api.models.GiphyResponse;
 
 import retrofit2.http.GET;
-import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 public interface GiphyService {
 
-    @GET("trending?api_key=dc6zaTOxFJmzC")
-    Observable<GiphyResponse> trendingGiphys();
+    @GET("trending")
+    Observable<GiphyResponse> trendingGiphys(@Query("api_key") String apiKey);
 
-    @GET("search?q={query}&api_key=dc6zaTOxFJmzC")
-    Observable<GiphyResponse> searchGiphys(@Path("query") String searchQuery);
+    @GET("search")
+    Observable<GiphyResponse> searchGiphys(@Query("q") String searchQuery, @Query("api_key") String apiKey);
 }

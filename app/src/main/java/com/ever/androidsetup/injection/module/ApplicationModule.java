@@ -3,6 +3,9 @@ package com.ever.androidsetup.injection.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.ever.androidsetup.user.UserManager;
+import com.ever.androidsetup.user.UserManagerImpl;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -26,4 +29,8 @@ public class ApplicationModule {
     @Provides
     @Singleton
     Context provideContext() { return application; }
+
+    @Provides
+    @Singleton
+    UserManager userManager() { return new UserManagerImpl(); }
 }

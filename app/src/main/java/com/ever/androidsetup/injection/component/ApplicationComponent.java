@@ -5,6 +5,7 @@ import com.ever.androidsetup.api.GiphyClient;
 import com.ever.androidsetup.injection.module.ApplicationModule;
 import com.ever.androidsetup.injection.module.NetworkModule;
 import com.ever.androidsetup.injection.module.SchedulerModule;
+import com.ever.androidsetup.user.UserManager;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -25,6 +26,7 @@ public interface ApplicationComponent {
     void inject(App app);
 
     GiphyClient client();
+    UserManager userManager();
 
     // Schedulers
     @Named(COMPUTATION)

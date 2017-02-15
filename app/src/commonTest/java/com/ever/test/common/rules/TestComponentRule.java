@@ -4,13 +4,18 @@ import android.content.Context;
 
 import com.ever.androidsetup.App;
 import com.ever.androidsetup.api.GiphyClient;
+import com.ever.androidsetup.api.GiphyClientImpl;
+import com.ever.androidsetup.user.UserManager;
+import com.ever.androidsetup.user.UserManagerImpl;
 import com.ever.test.common.api.TestGiphyClient;
 import com.ever.test.common.injection.component.TestComponent;
 import com.ever.test.common.injection.module.ApplicationTestModule;
+import com.ever.test.common.user.TestUserManager;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.mockito.Mockito;
 
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
@@ -74,6 +79,7 @@ public class TestComponentRule implements TestRule {
     public static class Builder {
         private Context context;
         private GiphyClient testClient;
+        private UserManager userManager;
         // Schedulers
         private final Scheduler computationScheduler;
         private Scheduler mainThreadScheduler;
@@ -82,7 +88,8 @@ public class TestComponentRule implements TestRule {
 
         // by default we are going to mock everything!
         public Builder() {
-            this.testClient = new TestGiphyClient();
+            this.testClient = mock(GiphyClientImpl.class);
+            this.userManager = mock(UserManagerImpl.class);
             // schedulers
             this.computationScheduler = Schedulers.immediate();
             this.mainThreadScheduler = Schedulers.immediate();
@@ -102,9 +109,24 @@ public class TestComponentRule implements TestRule {
             return this;
         }
 
+        public Builder withClient() {
+            this.testClient = new TestGiphyClient();
+            return this;
+        }
+
+        public Builder withUserManager(boolean real) {
+            if (real) {
+                this.userManager = new UserManagerImpl();
+            } else {
+                this.userManager = new TestUserManager();
+            }
+            return this;
+        }
+
         public TestComponentRule build() {
             ApplicationTestModule module = new ApplicationTestModule(
                     testClient,
+                    userManager,
                     computationScheduler,
                     mainThreadScheduler,
                     ioScheduler,

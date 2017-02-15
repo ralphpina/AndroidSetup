@@ -1,4 +1,4 @@
-package com.ever.androidsetup.providers;
+package com.ever.androidsetup.presenters;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -7,6 +7,7 @@ import com.ever.androidsetup.App;
 import com.ever.androidsetup.api.GiphyClient;
 import com.ever.androidsetup.api.models.GiphyResponse;
 import com.ever.androidsetup.injection.component.DaggerPresenterComponent;
+import com.ever.androidsetup.user.UserManager;
 import com.ever.androidsetup.views.MainView;
 
 import java.lang.ref.WeakReference;
@@ -28,6 +29,8 @@ public class MainPresenter {
     @Inject
     GiphyClient client;
     @Inject
+    UserManager userManager;
+    @Inject
     @Named(MAIN_THREAD)
     Scheduler observerOn;
     @Inject
@@ -48,6 +51,9 @@ public class MainPresenter {
     }
 
     public void onResume() {
+        if (viewRef.get() != null) {
+            viewRef.get().toastName(userManager.getDisplayName());
+        }
         if (isSearching) {
             return;
         }

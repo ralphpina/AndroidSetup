@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AndroidSetup</string>
     <string name="search">Search</string>
+    <string name="welcome_back">Hey %s. Welcome back!</string>
 </resources>

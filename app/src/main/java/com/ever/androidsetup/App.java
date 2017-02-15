@@ -5,6 +5,7 @@ import android.support.annotation.VisibleForTesting;
 
 import com.ever.androidsetup.injection.component.ApplicationComponent;
 import com.ever.androidsetup.injection.component.DaggerApplicationComponent;
+import com.ever.androidsetup.injection.module.ApplicationModule;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,6 +28,7 @@ public class App extends Application {
         Fresco.initialize(this);
         // inject stuff
         applicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
                 .build();
         applicationComponent.inject(this); // if we needed to inject anything into here
     }

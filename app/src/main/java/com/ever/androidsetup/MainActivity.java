@@ -14,9 +14,10 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.ever.androidsetup.api.models.Giphy;
-import com.ever.androidsetup.providers.MainPresenter;
+import com.ever.androidsetup.presenters.MainPresenter;
 import com.ever.androidsetup.views.MainView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -77,6 +78,11 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void onResume() {
         super.onResume();
         presenter.onResume();
+    }
+
+    @Override
+    public void toastName(@NonNull String name) {
+        Toast.makeText(this, getString(R.string.welcome_back, name), Toast.LENGTH_SHORT).show();
     }
 
     @Override

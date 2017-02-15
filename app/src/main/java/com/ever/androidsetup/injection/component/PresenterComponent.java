@@ -1,7 +1,7 @@
 package com.ever.androidsetup.injection.component;
 
 import com.ever.androidsetup.injection.scope.PerFragment;
-import com.ever.androidsetup.providers.MainPresenter;
+import com.ever.androidsetup.presenters.MainPresenter;
 
 import dagger.Component;
 

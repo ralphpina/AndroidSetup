@@ -10,6 +10,7 @@ import com.ever.androidsetup.user.UserManagerImpl;
 import com.ever.test.common.api.TestGiphyClient;
 import com.ever.test.common.injection.component.TestComponent;
 import com.ever.test.common.injection.module.ApplicationTestModule;
+import com.ever.test.common.injection.component.DaggerTestComponent;
 import com.ever.test.common.user.TestUserManager;
 
 import org.junit.rules.TestRule;
@@ -72,6 +73,10 @@ public class TestComponentRule implements TestRule {
 
     public TestGiphyClient getClient() {
         return (TestGiphyClient) testComponent.client();
+    }
+
+    public UserManager getUserManager() {
+        return testComponent.userManager();
     }
 
     // ===== BUILDER ===============================================================================

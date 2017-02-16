@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -86,23 +88,28 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
-    public void updateGiphies(@NonNull List<Giphy> giphies) {
-        if (giphies.size() > 0) {
+    public void updateGiphies(@Nullable List<Giphy> giphies) {
+        if (giphies != null && giphies.size() > 0) {
             spinner.setVisibility(GONE);
+            recyclerView.setVisibility(VISIBLE);
         }
-        recyclerView.setVisibility(VISIBLE);
         adapter.setGiphies(giphies);
     }
 
-    private class Adapter extends RecyclerView.Adapter<ViewHolder> {
+    @Override
+    public void onError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
 
-        private List<Giphy> giphies;
+    public class Adapter extends RecyclerView.Adapter<ViewHolder> {
 
-        public Adapter() {
+        List<Giphy> giphies;
+
+        Adapter() {
             this.giphies = new ArrayList<>();
         }
 
-        public void setGiphies(List<Giphy> giphies) {
+        void setGiphies(List<Giphy> giphies) {
             this.giphies = giphies;
             notifyDataSetChanged();
         }
@@ -132,12 +139,12 @@ public class MainActivity extends BaseActivity implements MainView {
         @BindView(R.id.image)
         SimpleDraweeView image;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(String url) {
+        void bind(String url) {
             Uri uri = Uri.parse(url);
             DraweeController controller = Fresco.newDraweeControllerBuilder()
                     .setUri(uri)
@@ -145,5 +152,17 @@ public class MainActivity extends BaseActivity implements MainView {
                     .build();
             image.setController(controller);
         }
+    }
+
+    // ===== TESTING ===============================================================================
+
+    @VisibleForTesting
+    public Adapter getAdapter() {
+        return adapter;
+    }
+
+    @VisibleForTesting
+    public MainPresenter getPresenter() {
+        return presenter;
     }
 }

@@ -10,5 +10,7 @@ public interface MainView {
 
     void updateGiphies(List<Giphy> giphies);
 
+    void onError(String error);
+
     void toastName(@NonNull String name);
 }

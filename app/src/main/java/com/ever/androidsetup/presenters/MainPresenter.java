@@ -1,7 +1,7 @@
 package com.ever.androidsetup.presenters;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.VisibleForTesting;
 
 import com.ever.androidsetup.App;
 import com.ever.androidsetup.api.GiphyClient;
@@ -23,8 +23,6 @@ import static com.ever.androidsetup.injection.module.SchedulerModule.IO;
 import static com.ever.androidsetup.injection.module.SchedulerModule.MAIN_THREAD;
 
 public class MainPresenter {
-
-    private static final String TAG = "MainPresenter";
 
     @Inject
     GiphyClient client;
@@ -71,7 +69,9 @@ public class MainPresenter {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Log.e(TAG, "error getting giphies = " + throwable.getMessage());
+                        if (viewRef.get() != null) {
+                            viewRef.get().onError(throwable.getMessage());
+                        }
                     }
                 });
     }
@@ -92,7 +92,9 @@ public class MainPresenter {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Log.e(TAG, "error getting search giphies = " + throwable.getMessage());
+                        if (viewRef.get() != null) {
+                            viewRef.get().onError(throwable.getMessage());
+                        }
                     }
                 }, new Action0() {
                     @Override
@@ -100,5 +102,18 @@ public class MainPresenter {
                         isSearching = false;
                     }
                 });
+    }
+
+    // ===== TESTING ===============================================================================
+
+    @VisibleForTesting
+    public void setTestSchedulers(Scheduler observerOn, Scheduler subscribeOn) {
+        this.observerOn = observerOn;
+        this.subscribeOn = subscribeOn;
+    }
+
+    @VisibleForTesting
+    boolean isSearching() {
+        return isSearching;
     }
 }
